@@ -1,24 +1,27 @@
-language: java
-jdk:
-  - openjdk6
-
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "EZcRb+f9HEF7xnzDcx7Mdk1L2xEVTvcr0KL0ZOgKL/+MVrKWrDceodHJKH9++9F296IXYVcx/UiMBIrozcj37BgA+DMAw1chIUjRZDw+1QM/5Jy7acL/o+RNHkGCXMW3Tsy/de96ePG7xZLNLchuXEN3DEZvTj6j8Ufdf8meQOE="
-
 addons:
   coverity_scan:
-    project:
-      name: "mfornos/humanize"
-      description: "Build submitted via Travis CI"
-    notification_email: marc.fornos@gmail.com
-    build_command_prepend: "mvn clean"
-    build_command:   "mvn -DskipTests=true compile"
     branch_pattern: master
+    build_command: mvn -DskipTests=true compile
+    build_command_prepend: mvn clean
+    notification_email: marc.fornos@gmail.com
+    project:
+      description: Build submitted via Travis CI
+      name: mfornos/humanize
 before_install:
-  - wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
-  - unzip -qq apache-maven-3.3.9.zip
-  - export M2_HOME=$PWD/apache-maven-3.3.9
-  - export PATH=$M2_HOME/bin:$PATH
+- wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
+- unzip -qq apache-maven-3.3.9.zip
+- export M2_HOME=$PWD/apache-maven-3.3.9
+- export PATH=$M2_HOME/bin:$PATH
+env:
+  global:
+  - secure: EZcRb+f9HEF7xnzDcx7Mdk1L2xEVTvcr0KL0ZOgKL/+MVrKWrDceodHJKH9++9F296IXYVcx/UiMBIrozcj37BgA+DMAw1chIUjRZDw+1QM/5Jy7acL/o+RNHkGCXMW3Tsy/de96ePG7xZLNLchuXEN3DEZvTj6j8Ufdf8meQOE=
+jdk:
+- openjdk6
+language: java
+notifications:
+  email: false
+  slack:
+    rooms: flakycov:U2MeVOPjdi4up1U793ubeIUZ
+    template:
+    - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}
+    - 'dashbot: %{repository_name} %{build_id}'
